@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Auth</title>
+  <style>
+    :root {
+      --bg: #080910;
+      --panel: #12131d;
+      --panel-soft: #1a1b2a;
+      --text: #f4f7ff;
+      --muted: #a7abc2;
+      --line: rgba(255, 255, 255, 0.17);
+      --grad-a: #8a5cff;
+      --grad-b: #4f86ff;
+      --glow: rgba(122, 95, 255, 0.55);
+      --danger: #ff8daf;
+      --radius: 24px;
+      --ease: 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 1.25rem;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(116, 75, 200, 0.22), transparent 40%),
+        radial-gradient(circle at 85% 90%, rgba(79, 134, 255, 0.2), transparent 42%),
+        var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .auth-shell {
+      width: min(980px, 100%);
+      min-height: 600px;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      background: linear-gradient(160deg, var(--panel), var(--panel-soft));
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(169, 138, 255, 0.45);
+      box-shadow:
+        0 0 0 1px rgba(193, 170, 255, 0.14) inset,
+        0 0 45px -8px var(--glow),
+        0 24px 60px rgba(0, 0, 0, 0.55);
+      position: relative;
+      isolation: isolate;
+    }
+
+    .auth-shell::before {
+      content: "";
+      position: absolute;
+      inset: -40% auto auto -30%;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138, 92, 255, 0.28), transparent 68%);
+      filter: blur(6px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .left-pane {
+      padding: clamp(2rem, 5vw, 3.75rem);
+      display: flex;
+      align-items: center;
+    }
+
+    .forms-wrap {
+      width: 100%;
+      position: relative;
+      min-height: 390px;
+    }
+
+    .auth-form {
+      width: 100%;
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px) scale(0.99);
+      transition: opacity var(--ease), transform var(--ease);
+    }
+
+    .auth-form.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .form-title {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.8rem;
+    }
+
+    .input-group {
+      margin-bottom: 1rem;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--text);
+      outline: none;
+      transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .input-group input::placeholder {
+      color: #878ca7;
+    }
+
+    .input-group input:focus {
+      border-color: rgba(161, 130, 255, 0.9);
+      box-shadow: 0 0 0 3px rgba(142, 101, 255, 0.25);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .cta-btn {
+      width: 100%;
+      margin-top: 0.8rem;
+      border: none;
+      border-radius: 999px;
+      padding: 0.9rem 1rem;
+      color: #ffffff;
+      font-size: 0.96rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      background: linear-gradient(120deg, var(--grad-a), var(--grad-b));
+      box-shadow:
+        0 8px 20px rgba(79, 134, 255, 0.22),
+        0 0 24px rgba(124, 98, 255, 0.4);
+      transition: transform 200ms ease, box-shadow 200ms ease, filter 200ms ease;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 12px 24px rgba(79, 134, 255, 0.3),
+        0 0 28px rgba(124, 98, 255, 0.52);
+      filter: brightness(1.04);
+    }
+
+    .switch-text {
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .switch-btn {
+      border: none;
+      background: none;
+      color: #9ec0ff;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 0.2rem;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .switch-btn:hover {
+      color: #c3d7ff;
+    }
+
+    .right-pane {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #ffffff;
+      background: linear-gradient(145deg, #7f58ff 0%, #5f70ff 40%, #438fff 100%);
+      clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+      padding: clamp(2rem, 5vw, 3rem);
+      overflow: hidden;
+    }
+
+    .right-pane::before {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 65%);
+      top: -80px;
+      right: -80px;
+    }
+
+    .right-pane::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.17), transparent 70%);
+      bottom: -80px;
+      left: -70px;
+    }
+
+    .welcome-content {
+      position: relative;
+      z-index: 1;
+      max-width: 330px;
+    }
+
+    .welcome-content h1 {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      letter-spacing: 0.06em;
+      line-height: 1.05;
+      margin-bottom: 0.8rem;
+      text-shadow: 0 0 24px rgba(255, 255, 255, 0.32);
+    }
+
+    .welcome-content p {
+      font-size: 0.97rem;
+      line-height: 1.55;
+      opacity: 0.93;
+      margin-bottom: 1.8rem;
+    }
+
+    .outline-btn {
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-radius: 999px;
+      padding: 0.7rem 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: default;
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.18) inset;
+    }
+
+    .error {
+      min-height: 1.2rem;
+      margin: 0.2rem 0 0.6rem;
+      color: var(--danger);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) {
+      .auth-shell {
+        grid-template-columns: 1fr;
+        min-height: unset;
+      }
+
+      .right-pane {
+        clip-path: none;
+        min-height: 240px;
+      }
+
+      .left-pane {
+        order: 2;
+      }
+
+      .right-pane {
+        order: 1;
+      }
+
+      .forms-wrap {
+        min-height: 430px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="auth-shell">
+    <section class="left-pane">
+      <div class="forms-wrap">
+        <form class="auth-form active" id="loginForm" novalidate>
+          <h2 class="form-title">Login</h2>
+          <div class="error" id="loginError"></div>
+          <div class="input-group">
+            <input type="email" id="loginEmail" placeholder="Email" autocomplete="off" required />
+          </div>
+          <div class="input-group">
+            <input type="password" id="loginPassword" placeholder="Password" autocomplete="off" required />
+          </div>
+          <button type="submit" class="cta-btn">Sign In</button>
+          <p class="switch-text">
+            Need an account?
+            <button type="button" class="switch-btn" id="goSignup">Sign Up</button>
+          </p>
+        </form>
+
+        <form class="auth-form" id="signupForm" novalidate>
+          <h2 class="form-title">Sign Up</h2>
+          <div class="error" id="signupError"></div>
+          <div class="input-group">
+            <input type="text" id="signupName" placeholder="Full Name" autocomplete="off" required />
+          </div>
+          <div class="input-group">
+            <input type="email" id="signupEmail" placeholder="Email" autocomplete="off" required />
+          </div>
+          <div class="input-group">
+            <input type="password" id="signupPassword" placeholder="Password" autocomplete="off" required />
+          </div>
+          <button type="submit" class="cta-btn">Create Account</button>
+          <p class="switch-text">
+            Already have an account?
+            <button type="button" class="switch-btn" id="goLogin">Login</button>
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <aside class="right-pane">
+      <div class="welcome-content">
+        <h1>WELCOME BACK!</h1>
+        <p>Access your workspace with secure credentials and continue your journey in seconds.</p>
+        <button type="button" class="outline-btn">NEON AUTH</button>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const goSignup = document.getElementById("goSignup");
+    const goLogin = document.getElementById("goLogin");
+    const loginError = document.getElementById("loginError");
+    const signupError = document.getElementById("signupError");
+
+    function showForm(mode) {
+      const loginActive = mode === "login";
+      loginForm.classList.toggle("active", loginActive);
+      signupForm.classList.toggle("active", !loginActive);
+      loginError.textContent = "";
+      signupError.textContent = "";
+      if (loginActive) {
+        document.getElementById("loginEmail").focus();
+      } else {
+        document.getElementById("signupName").focus();
+      }
+    }
+
+    goSignup.addEventListener("click", () => showForm("signup"));
+    goLogin.addEventListener("click", () => showForm("login"));
+
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value.trim();
+      if (!email || !password) {
+        loginError.textContent = "Please enter both email and password.";
+        return;
+      }
+      loginError.textContent = "";
+      alert("Signed in successfully.");
+    });
+
+    signupForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = document.getElementById("signupName").value.trim();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value.trim();
+      if (!name || !email || !password) {
+        signupError.textContent = "Please complete all sign-up fields.";
+        return;
+      }
+      signupError.textContent = "";
+      alert("Account created successfully.");
+    });
+  </script>
+</body>
+</html>
