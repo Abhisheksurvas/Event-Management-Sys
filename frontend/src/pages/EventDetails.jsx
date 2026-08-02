@@ -256,7 +256,7 @@ const EventDetails = () => {
                          userAttendee.registrationStatus === 'pending' ? 'bg-amber-50 border-amber-100 text-amber-600' : 
                          'bg-rose-50 border-rose-100 text-rose-600'
                        }`}>
-                          {userAttendee.registrationStatus === 'approved' ? <CheckCircle2 size={40} className="mx-auto mb-3" /> : 
+                          {userAttendee.registrationStatus === 'approved' ? <CheckCircle size={40} className="mx-auto mb-3" /> : 
                            userAttendee.registrationStatus === 'pending' ? <Clock size={40} className="mx-auto mb-3" /> : 
                            <XCircle size={40} className="mx-auto mb-3" />}
                           <p className="text-xl font-black uppercase">{userAttendee.registrationStatus}</p>

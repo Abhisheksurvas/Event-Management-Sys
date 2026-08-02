@@ -25,7 +25,10 @@ exports.getEvents = async (req, res) => {
     // Add attendance/registration status for the requesting user
     const eventsWithStatus = events.map(event => {
       const eventObj = event.toObject();
-      const attendee = event.attendees.find(a => a.user.toString() === userId);
+      const attendee = event.attendees.find(a => {
+        const attendeeUser = a.user && a.user._id ? a.user._id.toString() : (a.user ? a.user.toString() : null);
+        return attendeeUser === userId;
+      });
       eventObj.myStatus = attendee ? attendee.registrationStatus : "not joined";
       eventObj.attendanceStatus = attendee ? attendee.status : "absent";
       return eventObj;

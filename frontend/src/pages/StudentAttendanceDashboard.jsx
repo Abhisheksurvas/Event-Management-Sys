@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, Calendar, CheckCircle2, XCircle, UserPlus, Clock3, MapPin } from 'lucide-react';
+import { Search, Calendar, CheckCircle, XCircle, UserPlus, Clock3, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
@@ -94,7 +94,7 @@ const StudentAttendanceDashboard = ({ user }) => {
             <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
               <div className="flex items-start justify-between mb-4">
                 <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
-                  <CheckCircle2 className="w-6 h-6" />
+                  <CheckCircle className="w-6 h-6" />
                 </div>
                 <span className="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full">
                   {stats.percentage}%
@@ -164,6 +164,8 @@ const StudentAttendanceDashboard = ({ user }) => {
                             }`}
                           >
                             {event.myStatus === 'approved' && <CheckCircle2 className="w-3.5 h-3.5" />}
+                              {event.myStatus === 'approved' && <CheckCircle className="w-3.5 h-3.5" />}
+                              {event.myStatus === 'approved' && <CheckCircle className="w-3.5 h-3.5" />}
                             {event.myStatus === 'pending' && <Clock3 className="w-3.5 h-3.5" />}
                             {event.myStatus === 'rejected' && <XCircle className="w-3.5 h-3.5" />}
                             {event.myStatus}

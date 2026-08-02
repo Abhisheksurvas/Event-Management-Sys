@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import API from "../api";
-import { ShieldCheck, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import { ShieldCheck, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
 
 const TwoFactorVerify = () => {
   const [token, setToken] = useState("");
@@ -86,7 +86,7 @@ const TwoFactorVerify = () => {
               type="submit" 
               className="w-full py-5 bg-indigo-600 text-white font-black rounded-3xl hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all hover:-translate-y-1 active:scale-[0.98] flex items-center justify-center gap-3"
             >
-              <CheckCircle2 size={22} />
+              <CheckCircle size={22} />
               <span>Verify & Access</span>
             </button>
           </form>

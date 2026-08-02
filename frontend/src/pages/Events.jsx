@@ -160,27 +160,20 @@ const Events = () => {
                         </div>
 
                         <div className="mt-auto pt-4 flex gap-2">
-                          <Link 
-                            to={`/events/${event._id}`} 
-                            className="flex-1 flex items-center justify-center gap-2 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-all"
-                          >
-                            Details
-                          </Link>
-                          {event.myStatus === 'not joined' && (
-                             <button 
-                               onClick={() => handleRegister(event._id)}
-                               className="flex-[2] flex items-center justify-center gap-2 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all"
-                             >
-                               <UserPlus size={14} /> Register Now
-                             </button>
-                          )}
-                          {event.myStatus !== 'not joined' && (
-                             <button
-                               disabled
-                               className="flex-[2] flex items-center justify-center gap-2 py-3 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-2xl text-xs font-bold cursor-not-allowed"
-                             >
-                               <CheckCircle size={14} /> Registered
-                             </button>
+                          {event.myStatus !== 'not joined' ? (
+                            <Link 
+                              to={`/events/${event._id}`} 
+                              className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all"
+                            >
+                              <Eye size={14} /> See Details
+                            </Link>
+                          ) : (
+                            <button 
+                              onClick={() => handleRegister(event._id)}
+                              className="w-full flex items-center justify-center gap-2 py-3 bg-indigo-600 text-white rounded-2xl text-xs font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all"
+                            >
+                              <UserPlus size={14} /> Register Now
+                            </button>
                           )}
                         </div>
                       </div>
